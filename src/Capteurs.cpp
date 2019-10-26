@@ -14,24 +14,43 @@ const String Couleur[] =
     "Invalide",
 };
 
-int couleurCapteur()
+const double tensionADistance[15][15] =
+{
+  {2.21, 10}, 
+  {1.56, 15},
+  {1.25, 20},
+  {1.02, 25},
+  {0.87, 30},
+  {0.75, 35},
+  {0.68, 40},
+  {0.60, 45},
+  {0.55, 50},
+  {0.51, 55},
+  {0.49, 60},
+  {0.44, 65},
+  {0.43, 70},
+  {0.41, 75},
+  {0.39, 80},
+};
+
+int capteurCouleur()
 {
 
   // Initialisation avec un temps de 700ms et gain de 1.
   Adafruit_TCS34725 CapteurCouleur = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
 
   // Initialisation des valeurs par defaut.
-  uint16_t iRouge = 0;
-  uint16_t iVert  = 0;
-  uint16_t iBleu  = 0; 
-  uint16_t iClear = 0;
+  uint16_t iRouge = ValeurParDefaut;
+  uint16_t iVert  = ValeurParDefaut;
+  uint16_t iBleu  = ValeurParDefaut; 
+  uint16_t iClear = ValeurParDefaut;
 
   // Coordonéée x,y et z sur le plan des couleurs.
-  float X = 0;
-  float Y = 0;
-  float Z = 0;
-  float x = 0;
-  float y = 0;
+  float X = ValeurParDefaut;
+  float Y = ValeurParDefaut;
+  float Z = ValeurParDefaut;
+  float x = ValeurParDefaut;
+  float y = ValeurParDefaut;
 
   // Couleur détecter.
   int iCouleur = ccDefaut;
@@ -154,4 +173,50 @@ int couleurCapteur()
     }
     
     return iCouleur;   
+}
+
+double capteurDistance(int capteurChoisi)
+{
+  // Initialisation des valeurs par defaut.
+  double valeursCapteur       = ValeurParDefaut;
+  double tensionSortieCapteur = ValeurParDefaut;
+  double distanceCapteur      = ValeurParDefaut;
+  int iIncrementation         = ValeurParDefaut;
+
+  valeursCapteur = analogRead(capteurChoisi);
+
+  // Convertion valeur analogue (0 à 1023) en tension (0 à 5V)
+  tensionSortieCapteur = valeursCapteur * (5.0 / 1023.0 );
+
+  /*
+  //Valeur distance théorique. Fonction exponentielle.
+  distanceCapteur = log((tensionSortieCapteur - 0.35) / 4.23) / log(0.93);
+  */
+
+  //Valeur distance pratique. Comparaison avec un tableau de valeur.
+  while (distanceCapteur == ValeurParDefaut)
+  {
+    if (tensionADistance[iIncrementation][0] < tensionSortieCapteur)
+    {
+      distanceCapteur = tensionADistance[iIncrementation - 1][1];
+    }
+    // Sinon si la tension est inférieure à 0.39V, dire que la tension est 80cm., 
+    else if (iIncrementation > 15)
+    {
+      distanceCapteur = tensionADistance[14][1];
+    }
+    else
+    {
+      // Incrémenter la valeur d'incrémentation.
+      iIncrementation ++;
+    }  
+  }   
+  
+  Serial.print("Tension dans fonction: ");
+  Serial.println(tensionSortieCapteur);
+  Serial.print("Distance: ");
+  Serial.println(distanceCapteur);
+  Serial.println(valeursCapteur);
+  
+  return distanceCapteur;
 }

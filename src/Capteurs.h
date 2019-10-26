@@ -10,8 +10,11 @@ Librairie pour les capteurs des robots.
 // Includes
 #include <arduino.h>
 #include <Adafruit_TCS34725.h>
+#include <math.h>
 
 // Defines
+#define pinCapteurDistance1 A0
+#define pinCapteurDistance2 A1
 
 // Enumération
 enum CouleurCapter
@@ -29,6 +32,8 @@ enum CouleurCapter
 };
 
 // Fonction
-int couleurCapteur();
+int capteurCouleur();
+
+double capteurDistance(int capteurChoisi);
 
 #endif //LibRobus
