@@ -2,8 +2,6 @@
 #include <headers/Capteurs.h>
 #include <headers/FonctionsSuiveur.h>
 
-
-//#define PINSUIVEURLIGNE A7
 #define ROUGE 0
 #define VERT 1
 #define BLEU 2
@@ -12,26 +10,13 @@
 #define ROBOTA 0
 #define ROBOTB 1
 
-
 #define ANGLEROBOTA 25
 #define ANGLEROBOTB 40
 
 #define COLORBUTBALLON BLEU
 #define BUTFINAL VERT
 
-bool hasBall = false;
-
-String color;
-int indexOfBall = 0;
-int indexOfGoal = 1;
-const int robotId = 0;
-int direction = -1;
-int lastDirection;
-int otherRobotPosition; // todo peut etre pratique d integrer cela pour bien se tasser du chemin avec le robot A 
 bool done = false;
-bool ibal = false;
-bool f = false;
-
 int i = 0;
 
 void AvanceToutDroit(int distance)
@@ -59,13 +44,7 @@ void AvanceToutDroit(int distance)
    
     delay(50);
 
-#if ANGLEROBOTA
     encodeur = ENCODER_Read(0);
-#endif
-
-#if ANGLEROBOTB
-    encodeur = ENCODER_Read(0);
-#endif
   }
 
   decelerate();
@@ -249,7 +228,6 @@ void loop()
       //Le but.
       rotate(0, 135);
       AvanceToutDroit(180);
-    
     }
     //Si le but est le jaune.
     if(BUTFINAL == ccJaune)
